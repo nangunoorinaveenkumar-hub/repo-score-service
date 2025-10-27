@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+github:
+  api-url: https://api.github.com
+  api-version: 2022-11-28
+  token: ${GITHUB_TOKEN:}
+  per-page-default: 30
+
+scoring:
+  stars-weight: 0.6
+  forks-weight: 0.25
+  recency-weight: 0.15
+  recency-half-life-days: 30

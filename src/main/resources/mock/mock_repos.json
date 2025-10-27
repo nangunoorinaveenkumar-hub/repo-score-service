@@ -1,0 +1,51 @@
+{
+  "total_count": 5,
+  "incomplete_results": false,
+  "items": [
+    {
+      "id": 1,
+      "full_name": "octocat/Hello-World",
+      "html_url": "https://github.com/octocat/Hello-World",
+      "description": "My first repository on GitHub!",
+      "stargazers_count": 1500,
+      "forks_count": 200,
+      "pushed_at": "2025-10-20T12:00:00Z"
+    },
+    {
+      "id": 2,
+      "full_name": "spring-projects/spring-boot-one",
+      "html_url": "https://github.com/spring-projects/spring-boot",
+      "description": "Spring Boot makes it easy to create stand-alone applications.",
+      "stargazers_count": 75000,
+      "forks_count": 45000,
+      "pushed_at": "2025-10-25T12:00:00Z"
+    },
+    {
+      "id": 3,
+      "full_name": "spring-projects/spring-boot-two",
+      "html_url": "https://github.com/spring-projects/spring-boot2",
+      "description": "Spring Boot2 makes it easy to create stand-alone applications.",
+      "stargazers_count": 85000,
+      "forks_count": 55000,
+      "pushed_at": "2025-10-26T12:00:00Z"
+    },
+    {
+      "id": 4,
+      "full_name": "spring-projects/spring-boot-three",
+      "html_url": "https://github.com/spring-projects/spring-boot3",
+      "description": "Spring Boot3 makes it easy to create stand-alone applications.",
+      "stargazers_count": 86000,
+      "forks_count": 56000,
+      "pushed_at": "2025-10-24T12:00:00Z"
+    },
+    {
+      "id": 5,
+      "full_name": "spring-projects/spring-boot-four",
+      "html_url": "https://github.com/spring-projects/spring-boot4",
+      "description": "Spring Boot4 makes it easy to create stand-alone applications.",
+      "stargazers_count": 87000,
+      "forks_count": 45000,
+      "pushed_at": "2025-10-27T12:00:00Z"
+    }
+  ]
+}
