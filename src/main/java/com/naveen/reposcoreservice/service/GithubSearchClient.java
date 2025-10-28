@@ -1,7 +1,7 @@
 package com.naveen.reposcoreservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.naveen.reposcoreservice.dto.GithubSearchResponseDto;
+import com.naveen.reposcoreservice.dto.GithubSearchResponseItem;
 import com.naveen.reposcoreservice.service.exception.GithubClientException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -26,7 +26,7 @@ public class GithubSearchClient {
 		this.objectMapper = objectMapper;
 	}
 
-	public Mono<GithubSearchResponseDto> searchRepositories(
+	public Mono<GithubSearchResponseItem> searchRepositories(
 		final String language,
 		final String createdAfter,
 		final String sort,
@@ -38,7 +38,7 @@ public class GithubSearchClient {
 			// Use mock data
 			try {
 				final InputStream is = new ClassPathResource("mock/mock_repos.json").getInputStream();
-				final GithubSearchResponseDto dto = objectMapper.readValue(is, GithubSearchResponseDto.class);
+				final GithubSearchResponseItem dto = objectMapper.readValue(is, GithubSearchResponseItem.class);
 				return Mono.just(dto);
 			} catch (Exception e) {
 				throw new GithubClientException("Failed to load mock repository data", e);
@@ -57,7 +57,7 @@ public class GithubSearchClient {
 			                .queryParam("per_page", perPage)
 			                .build())
 		                .retrieve()
-		                .bodyToMono(GithubSearchResponseDto.class)
+		                .bodyToMono(GithubSearchResponseItem.class)
 		                .onErrorMap(e -> new GithubClientException("GitHub API request failed", e));
 	}
 }

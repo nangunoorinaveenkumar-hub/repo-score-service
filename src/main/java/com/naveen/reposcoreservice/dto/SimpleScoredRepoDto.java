@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ScoredRepoDto {
+public class SimpleScoredRepoDto {
 	private String fullName;
 	private String htmlUrl;
 	private String description;

@@ -1,9 +1,9 @@
 package com.naveen.reposcoreservice.service;
 
-import com.naveen.reposcoreservice.dto.GithubSearchResponseDto;
-import com.naveen.reposcoreservice.dto.ScoredRepoDto;
+import com.naveen.reposcoreservice.dto.GithubSearchResponseItem;
+import com.naveen.reposcoreservice.dto.SimpleScoredRepoDto;
+import com.naveen.reposcoreservice.dto.SimpleScoredRepoItem;
 import com.naveen.reposcoreservice.dto.ScoredRepoItem;
-import com.naveen.reposcoreservice.dto.RepoItem;
 import com.naveen.reposcoreservice.dto.ScoredRepoConverter;
 import java.util.Comparator;
 import java.util.List;
@@ -15,33 +15,35 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ScoringService {
 
-	private final ScoreCalculatorService scoreCalculator;
+	private final ScoreCalculatorService scoreCalculatorService;
 	private final ScoredRepoConverter scoredRepoConverter;
 
-	public List<ScoredRepoDto> score(final GithubSearchResponseDto githubSearchResponseDto) {
-		final List<ScoredRepoItem> scoredItems = githubSearchResponseDto.getItems().stream()
-		                                                                .map(this::scoreRepository)
-		                                                                .toList();
+	public List<SimpleScoredRepoDto> score(final GithubSearchResponseItem githubSearchResponseItem) {
+		final List<SimpleScoredRepoItem> scoredItems = githubSearchResponseItem.getItems().stream()
+		                                                                      .map(this::scoreRepository)
+		                                                                      .toList();
 
 		final double maxRawScore = scoredItems.stream()
-		                                      .mapToDouble(ScoredRepoItem::getRawScore)
+		                                      .mapToDouble(SimpleScoredRepoItem::getRawScore)
 		                                      .max()
 		                                      .orElse(1.0);
 
 		return scoredItems.stream()
-		                  .sorted(Comparator.comparingDouble(ScoredRepoItem::getRawScore).reversed())
-		                  .map(item -> scoredRepoConverter.convert(
-			                  item.getRepoItem(),
-			                  100.0 * item.getRawScore() / maxRawScore))
+		                  .sorted(Comparator.comparingDouble(SimpleScoredRepoItem::getRawScore).reversed())
+		                  .map(item -> scoredRepoConverter.convertItemToDto(
+			                  item,
+			                  scoreCalculatorService.getScore(item, maxRawScore)))
 		                  .collect(Collectors.toList());
 	}
 
-	private ScoredRepoItem scoreRepository(RepoItem item) {
-		final double rawScore = scoreCalculator.calculateRawScore(item);
-		return ScoredRepoItem.builder()
-		                     .repoItem(item)
-		                     .rawScore(rawScore)
-		                     .build();
+	private SimpleScoredRepoItem scoreRepository(ScoredRepoItem repoItem) {
+		final double rawScore = scoreCalculatorService.calculateRawScore(repoItem);
+		return SimpleScoredRepoItem.builder()
+                                   .fullName(repoItem.getFullName())
+                                   .htmlUrl(repoItem.getHtmlUrl())
+                                   .description(repoItem.getDescription())
+                                   .rawScore(rawScore)
+                                   .build();
 	}
 
 }

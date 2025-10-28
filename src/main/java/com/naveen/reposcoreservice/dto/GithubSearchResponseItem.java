@@ -1,13 +1,13 @@
 package com.naveen.reposcoreservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
-import java.util.List;
 
 @Data
 @Builder
-public class GithubSearchResponseDto {
+public class GithubSearchResponseItem {
 
 	@JsonProperty("total_count")
 	private int totalCount;
@@ -15,6 +15,5 @@ public class GithubSearchResponseDto {
 	@JsonProperty("incomplete_results")
 	private boolean incompleteResults;
 
-	private List<RepoItem> items;
-
+	private List<ScoredRepoItem> items;
 }
