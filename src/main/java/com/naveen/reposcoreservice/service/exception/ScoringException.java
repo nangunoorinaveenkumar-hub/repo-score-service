@@ -1,7 +1,7 @@
 package com.naveen.reposcoreservice.service.exception;
 
 public class ScoringException extends RuntimeException {
-	public ScoringException(String message, Throwable cause) {
+	public ScoringException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
 

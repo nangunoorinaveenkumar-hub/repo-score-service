@@ -1,5 +1,7 @@
-package com.naveen.reposcoreservice.dto;
+package com.naveen.reposcoreservice.converter;
 
+import com.naveen.reposcoreservice.dto.SimpleScoredRepoDto;
+import com.naveen.reposcoreservice.dto.SimpleScoredRepoItem;
 import org.springframework.stereotype.Component;
 
 @Component

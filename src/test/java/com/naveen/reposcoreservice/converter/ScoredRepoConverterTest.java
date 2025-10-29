@@ -1,7 +1,9 @@
-package com.naveen.reposcoreservice.dto;
+package com.naveen.reposcoreservice.converter;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import com.naveen.reposcoreservice.dto.SimpleScoredRepoDto;
+import com.naveen.reposcoreservice.dto.SimpleScoredRepoItem;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(ScoringException.class)
 	public ResponseEntity<Object> handleScoringException(ScoringException ex) {
-		Map<String, Object> body = new HashMap<>();
+		final Map<String, Object> body = new HashMap<>();
 		body.put("timestamp", LocalDateTime.now());
 		body.put("message", ex.getMessage());
 		body.put("status", HttpStatus.BAD_REQUEST.value());
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(GithubClientException.class)
 	public ResponseEntity<Object> handleGithubClientException(GithubClientException ex) {
-		Map<String, Object> body = new HashMap<>();
+		final Map<String, Object> body = new HashMap<>();
 		body.put("timestamp", LocalDateTime.now());
 		body.put("message", ex.getMessage());
 		body.put("status", HttpStatus.BAD_GATEWAY.value());

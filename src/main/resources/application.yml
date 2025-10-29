@@ -2,10 +2,12 @@ server:
   port: 8080
 
 github:
-  api-url: https://api.github.com
+  api:
+   base-url: https://api.github.com
   api-version: 2022-11-28
   token: ${GITHUB_TOKEN:}
-  per-page-default: 30
+  client:
+    max-in-memory-size: 16777216
 
 scoring:
   stars-weight: 0.6

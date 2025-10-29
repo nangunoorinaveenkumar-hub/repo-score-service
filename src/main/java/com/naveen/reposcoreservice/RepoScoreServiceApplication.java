@@ -9,5 +9,4 @@ public class RepoScoreServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(RepoScoreServiceApplication.class, args);
 	}
-
 }

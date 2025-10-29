@@ -1,11 +1,13 @@
 package com.naveen.reposcoreservice.controller;
 
-import com.naveen.reposcoreservice.service.GithubSearchClient;
 import com.naveen.reposcoreservice.dto.SimpleScoredRepoDto;
 import com.naveen.reposcoreservice.service.ScoringService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -13,7 +15,6 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class RepoScoreController {
 
-	private final GithubSearchClient githubSearchClient;
 	private final ScoringService scoringService;
 
 	/**
@@ -30,16 +31,8 @@ public class RepoScoreController {
 		@RequestParam final String language,
 		@RequestParam("created_after") final String createdAfter,
 		@RequestParam(defaultValue = "1") final int page,
-		@RequestParam(value = "per_page", defaultValue = "5")final int perPage
+		@RequestParam(value = "per_page", defaultValue = "5") final int perPage
 	) {
-		return githubSearchClient.searchRepositories(
-			                         language,
-			                         createdAfter,
-			                         "stars",
-			                         "desc",
-			                         page,
-			                         perPage
-		                         )
-		                         .map(scoringService::score);
+		return scoringService.getScoredRepos(language, createdAfter, page, perPage);
 	}
 }

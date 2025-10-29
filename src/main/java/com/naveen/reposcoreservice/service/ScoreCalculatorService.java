@@ -27,40 +27,47 @@ public class ScoreCalculatorService {
 	@Value("${scoring.recency-half-life-days}")
 	private double recencyHalfLifeDays;
 
-	public double calculateRawScore(final ScoredRepoItem repoDto) {
-		final double starsScore = calculateScore(repoDto.getStargazersCount());
-		final double forksScore = calculateScore(repoDto.getForksCount());
-		final double recencyScore = calculateRecencyScore(repoDto);
+	public double calculateRepositoryRawScore(final ScoredRepoItem repoItem) {
+		final double starsScore = calculateLogarithmicScore(repoItem.getStargazersCount());
+		final double forksScore = calculateLogarithmicScore(repoItem.getForksCount());
+		final double recencyScore = calculateRecencyScoreFromPushDate(repoItem.getPushedAt(), repoItem.getFullName());
 
-		return calculateWeightedScore(starsScore, forksScore, recencyScore);
+		return calculateWeightedScoreFromComponents(starsScore, forksScore, recencyScore);
 	}
 
-	public double getScore(final SimpleScoredRepoItem item, final double maxRawScore) {
+	public double normalizeScore(final SimpleScoredRepoItem item, final double maxRawScore) {
+		if (maxRawScore == 0) return 0;
 		return 100.0 * item.getRawScore() / maxRawScore;
 	}
 
-	private double calculateScore(final int count) {
+	private double calculateLogarithmicScore(final int count) {
 		return Math.log10(1 + count);
 	}
 
-	private double calculateRecencyScore(final ScoredRepoItem repoDto) {
+	private double calculateRecencyScoreFromPushDate(final String pushedAtStr, final String repoFullName) {
 		try {
-			final OffsetDateTime pushedAt = OffsetDateTime.parse(repoDto.getPushedAt());
-			final double daysSincePush = ChronoUnit.DAYS.between(pushedAt, OffsetDateTime.now(ZoneOffset.UTC));
-			return getRecencyScore(daysSincePush);
+			final OffsetDateTime pushedAt = OffsetDateTime.parse(pushedAtStr);
+			final double daysSincePush = calculateDaysSincePush(pushedAt);
+			return calculateRecencyScore(daysSincePush);
 		} catch (Exception ex) {
-			throw new ScoringException("Failed to calculate recency score for repo: " + repoDto.getFullName(), ex);
+			throw new ScoringException(
+				"Failed to calculate recency score for repo: " + repoFullName, ex
+			);
 		}
 	}
 
-	private double getRecencyScore(final double daysSincePush) {
+	private double calculateDaysSincePush(final OffsetDateTime pushedAt) {
+		return ChronoUnit.DAYS.between(pushedAt, OffsetDateTime.now(ZoneOffset.UTC));
+	}
+
+
+	private double calculateRecencyScore(final double daysSincePush) {
 		return 1.0 / (1.0 + (daysSincePush / recencyHalfLifeDays));
 	}
 
-	private double calculateWeightedScore(final double starsScore, final double forksScore, final double recencyScore) {
+	private double calculateWeightedScoreFromComponents(final double starsScore, final double forksScore, final double recencyScore) {
 		return (starsWeight * starsScore) +
 		       (forksWeight * forksScore) +
 		       (recencyWeight * recencyScore);
 	}
-
 }

@@ -11,12 +11,14 @@ public class WebClientConfig {
 
 	@Bean
 	public WebClient githubWebClient(
-		@Value("${github.api-url}") final String apiUrl,
+		@Value("${github.api.base-url}") final String apiUrl,
+		@Value("${github.client.max-in-memory-size}") final int maxInMemorySize,
 		@Value("${github.api-version}") final String apiVersion,
 		@Value("${github.token:}") final String token
 	) {
 		final WebClient.Builder builder = WebClient.builder()
 		                                     .baseUrl(apiUrl)
+                                             .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(maxInMemorySize))
 		                                     .defaultHeader(HttpHeaders.ACCEPT, "application/vnd.github+json")
 		                                     .defaultHeader("X-GitHub-Api-Version", apiVersion);
 
