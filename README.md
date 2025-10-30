@@ -185,6 +185,20 @@ mvn test
 - Coverage is tracked via JaCoCo and included in SonarQube metrics.
 ---
 
+## 🧠 API Documentation (Swagger UI)
+
+This service includes **Swagger UI** for easy exploration and testing of endpoints.
+
+Once the application is running, open your browser at:
+
+👉 [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+You’ll see:
+- `/api/v1/repos/score` — main endpoint for fetching and scoring repositories.
+- Automatic parameter descriptions and example values.
+
+---
+
 ## **Code Quality & SonarQube**
 - SonarQube is used to track code smells, vulnerabilities, and coverage.
 - Run locally with:
