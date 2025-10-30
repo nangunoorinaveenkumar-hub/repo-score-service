@@ -6,7 +6,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.within;
 
 import com.naveen.reposcoreservice.dto.ScoredRepoItem;
 import com.naveen.reposcoreservice.dto.SimpleScoredRepoItem;
-import com.naveen.reposcoreservice.service.exception.ScoringException;
+import com.naveen.reposcoreservice.exception.ScoringException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.BeforeEach;

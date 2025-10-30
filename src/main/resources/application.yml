@@ -8,6 +8,8 @@ github:
   token: ${GITHUB_TOKEN:}
   client:
     max-in-memory-size: 16777216
+  cache:
+    ttl-minutes: 5
 
 scoring:
   stars-weight: 0.6

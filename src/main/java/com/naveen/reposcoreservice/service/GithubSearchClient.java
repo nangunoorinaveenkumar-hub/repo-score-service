@@ -3,7 +3,7 @@ package com.naveen.reposcoreservice.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naveen.reposcoreservice.dto.GithubSearchRequest;
 import com.naveen.reposcoreservice.dto.GithubSearchResponseItem;
-import com.naveen.reposcoreservice.service.exception.GithubClientException;
+import com.naveen.reposcoreservice.exception.GithubClientException;
 import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -23,16 +23,18 @@ public class GithubSearchClient {
 	private final WebClient webClient;
 	private final String token;
 	private final ObjectMapper objectMapper;
+	private final Duration cacheTtl;
 
 	private final ConcurrentMap<String, Mono<GithubSearchResponseItem>> cache = new ConcurrentHashMap<>();
-	private final Duration cacheTtl = Duration.ofMinutes(5);
 
 	public GithubSearchClient(final WebClient webClient,
 		@Value("${github.token:}") final String token,
-		final ObjectMapper objectMapper) {
+		final ObjectMapper objectMapper,
+		@Value("${github.cache.ttl-minutes:}") final long cacheTtlMinutes) {
 		this.webClient = webClient;
 		this.token = token;
 		this.objectMapper = objectMapper;
+		this.cacheTtl = Duration.ofMinutes(cacheTtlMinutes);
 	}
 
 	public Mono<GithubSearchResponseItem> searchRepositories(final GithubSearchRequest githubSearchRequest) {

@@ -2,9 +2,6 @@ package com.naveen.reposcoreservice.exception;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.naveen.reposcoreservice.service.exception.GithubClientException;
-import com.naveen.reposcoreservice.service.exception.GlobalExceptionHandler;
-import com.naveen.reposcoreservice.service.exception.ScoringException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -2,7 +2,7 @@ package com.naveen.reposcoreservice.service;
 
 import com.naveen.reposcoreservice.dto.ScoredRepoItem;
 import com.naveen.reposcoreservice.dto.SimpleScoredRepoItem;
-import com.naveen.reposcoreservice.service.exception.ScoringException;
+import com.naveen.reposcoreservice.exception.ScoringException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -41,7 +41,7 @@ public class ScoreCalculatorService {
 	}
 
 	private double calculateLogarithmicScore(final int count) {
-		return Math.log10(1 + count);
+		return Math.log10(1.0 + count);
 	}
 
 	private double calculateRecencyScoreFromPushDate(final String pushedAtStr, final String repoFullName) {
@@ -59,7 +59,6 @@ public class ScoreCalculatorService {
 	private double calculateDaysSincePush(final OffsetDateTime pushedAt) {
 		return ChronoUnit.DAYS.between(pushedAt, OffsetDateTime.now(ZoneOffset.UTC));
 	}
-
 
 	private double calculateRecencyScore(final double daysSincePush) {
 		return 1.0 / (1.0 + (daysSincePush / recencyHalfLifeDays));

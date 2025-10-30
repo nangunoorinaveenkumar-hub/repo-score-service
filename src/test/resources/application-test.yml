@@ -1,7 +1,15 @@
 github:
   api:
-    base-url: https://api.github.com
+    base-url: http://localhost:8080
   client:
     max-in-memory-size: 16777216
-  api-version: 2022-11-28
-  token: dummy-token
+  api-version: v3
+  token: ""
+  cache:
+    ttl-minutes: 5
+
+scoring:
+  stars-weight: 0.5
+  forks-weight: 0.3
+  recency-weight: 0.2
+  recency-half-life-days: 30
