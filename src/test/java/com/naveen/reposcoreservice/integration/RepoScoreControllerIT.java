@@ -14,7 +14,9 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,16 +41,18 @@ class RepoScoreControllerIT {
 
 		StepVerifier.create(resultMono)
 		            .assertNext(scoredRepoResponse -> {
-			            scoredRepoResponse.getItems().sort(Comparator.comparing(SimpleScoredRepoDto::getFullName, String.CASE_INSENSITIVE_ORDER));
-			            mockResponse.getItems().sort(Comparator.comparing(ScoredRepoItem::getFullName, String.CASE_INSENSITIVE_ORDER));
+			            final List<SimpleScoredRepoDto> scoredItems = new ArrayList<>(scoredRepoResponse.getItems());
+			            final List<ScoredRepoItem> mockItems = new ArrayList<>(mockResponse.getItems());
 
-			            assertThat(scoredRepoResponse.getItems()).hasSameSizeAs(mockResponse.getItems());
+			            scoredItems.sort(Comparator.comparing(SimpleScoredRepoDto::getFullName, String.CASE_INSENSITIVE_ORDER));
+			            mockItems.sort(Comparator.comparing(ScoredRepoItem::getFullName, String.CASE_INSENSITIVE_ORDER));
 
-			            IntStream.range(0, scoredRepoResponse.getItems().size())
+			            assertThat(scoredItems).hasSameSizeAs(mockItems);
+			            IntStream.range(0, scoredItems.size())
 			                     .forEach(i -> {
-				                     assertThat(scoredRepoResponse.getItems().get(i).getFullName())
-					                     .isEqualTo(mockResponse.getItems().get(i).getFullName());
-				                     assertThat(scoredRepoResponse.getItems().get(i).getScore())
+				                     assertThat(scoredItems.get(i).getFullName())
+					                     .isEqualTo(mockItems.get(i).getFullName());
+				                     assertThat(scoredItems.get(i).getScore())
 					                     .isGreaterThanOrEqualTo(0);
 			                     });
 		            })
