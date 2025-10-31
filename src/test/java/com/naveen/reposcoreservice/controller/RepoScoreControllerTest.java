@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import com.naveen.reposcoreservice.dto.ScoredRepoResponse;
 import com.naveen.reposcoreservice.dto.SimpleScoredRepoDto;
 import com.naveen.reposcoreservice.service.ScoringService;
 import java.util.List;
@@ -34,22 +35,28 @@ class RepoScoreControllerTest {
 			SimpleScoredRepoDto.builder().fullName("repo1").score(100).build(),
 			SimpleScoredRepoDto.builder().fullName("repo2").score(200).build()
 		);
+		final ScoredRepoResponse scoredRepoResponse = ScoredRepoResponse.builder()
+		                                                                .totalCount(2)
+		                                                                .incompleteResults(false)
+		                                                                .items(scoredList)
+		                                                                .build();
 
 		when(scoringService.getScoredRepos(language, createdAfter, page, perPage))
-			.thenReturn(Mono.just(scoredList));
+			.thenReturn(Mono.just(scoredRepoResponse));
 
 
-		final List<SimpleScoredRepoDto> result = repoScoreController
+		final ScoredRepoResponse result = repoScoreController
 			.getScoredRepos(language, createdAfter, page, perPage)
 			.block();
 
-		assertThat(result)
+		assertThat(result).isNotNull();
+		assertThat(result.getItems())
 			.isNotNull()
 			.hasSize(2)
 			.extracting(SimpleScoredRepoDto::getFullName)
 			.containsExactly("repo1", "repo2");
 
-		assertThat(result)
+		assertThat(result.getItems())
 			.extracting(SimpleScoredRepoDto::getScore)
 			.containsExactly(100.00, 200.00);
 

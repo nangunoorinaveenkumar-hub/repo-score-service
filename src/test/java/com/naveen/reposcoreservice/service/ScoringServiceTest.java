@@ -74,20 +74,48 @@ class ScoringServiceTest {
 				                          .build();
 			});
 
-		final List<SimpleScoredRepoDto> result = scoringService.score(githubSearchResponseItem);
+		final ScoredRepoResponse result = scoringService.score(githubSearchResponseItem);
 
-		assertThat(result)
+		assertThat(result.getItems())
 			.isNotNull()
 			.hasSize(2);
 
-		assertThat(result.get(0).getFullName()).isEqualTo("naveen/repo1");
-		assertThat(result.get(0).getScore()).isEqualTo(1.0);
-		assertThat(result.get(1).getFullName()).isEqualTo("naveen/repo2");
-		assertThat(result.get(1).getScore()).isEqualTo(0.5);
+		assertThat(result.getItems().get(0).getFullName()).isEqualTo("naveen/repo1");
+		assertThat(result.getItems().get(0).getScore()).isEqualTo(1.0);
+		assertThat(result.getItems().get(1).getFullName()).isEqualTo("naveen/repo2");
+		assertThat(result.getItems().get(1).getScore()).isEqualTo(0.5);
 	}
 
 	@Test
-	void getScoredRepos_shouldInvokeGithubClientAndReturnMonoOfDtos() {
+	void score_shouldReturnEmptyResponse_whenItemsAreNull() {
+		final GithubSearchResponseItem ghSearchResponseItem = GithubSearchResponseItem.builder().items(null).build();
+
+		final ScoredRepoResponse result = scoringService.score(ghSearchResponseItem);
+
+		assertThat(result.getItems())
+			.isNotNull()
+			.isEmpty();
+
+		assertThat(result.getTotalCount()).isZero();
+		assertThat(result.isIncompleteResults()).isFalse();
+	}
+
+	@Test
+	void score_shouldReturnEmptyResponse_whenItemsAreEmpty() {
+		final GithubSearchResponseItem ghSearchResponseItem = GithubSearchResponseItem.builder().items(List.of()).build();
+
+		final ScoredRepoResponse result = scoringService.score(ghSearchResponseItem);
+
+		assertThat(result.getItems())
+			.isNotNull()
+			.isEmpty();
+
+		assertThat(result.getTotalCount()).isZero();
+		assertThat(result.isIncompleteResults()).isFalse();
+	}
+
+	@Test
+	void getScoredRepos_shouldInvokeGithubClientAndReturnMonoOfResponse() {
 		when(githubSearchClient.searchRepositories(any(GithubSearchRequest.class)))
 			.thenReturn(Mono.just(githubSearchResponseItem));
 
@@ -100,11 +128,12 @@ class ScoringServiceTest {
 			                               .score(1.0)
 			                               .build());
 
-		final List<SimpleScoredRepoDto> result = scoringService
+		final ScoredRepoResponse result = scoringService
 			.getScoredRepos("java", "2024-01-01", 1, 10)
 			.block();
 
-		assertThat(result).isNotNull().isNotEmpty();
-		assertThat(result.get(0).getFullName()).isEqualTo("naveen/repo1");
+		assertThat(result).isNotNull();
+		assertThat(result.getItems()).isNotNull().isNotEmpty();
+		assertThat(result.getItems().get(0).getFullName()).isEqualTo("naveen/repo1");
 	}
 }

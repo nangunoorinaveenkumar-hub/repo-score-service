@@ -4,6 +4,7 @@ import com.naveen.reposcoreservice.dto.GithubSearchRequest;
 import com.naveen.reposcoreservice.dto.GithubSearchResponseItem;
 import com.naveen.reposcoreservice.converter.ScoredRepoConverter;
 import com.naveen.reposcoreservice.dto.ScoredRepoItem;
+import com.naveen.reposcoreservice.dto.ScoredRepoResponse;
 import com.naveen.reposcoreservice.dto.SimpleScoredRepoDto;
 import com.naveen.reposcoreservice.dto.SimpleScoredRepoItem;
 import java.util.Comparator;
@@ -21,7 +22,14 @@ public class ScoringService {
 	private final ScoreCalculatorService scoreCalculatorService;
 	private final ScoredRepoConverter scoredRepoConverter;
 
-	public List<SimpleScoredRepoDto> score(final GithubSearchResponseItem githubSearchResponseItem) {
+	public ScoredRepoResponse score(final GithubSearchResponseItem githubSearchResponseItem) {
+		if (githubSearchResponseItem.getItems() == null || githubSearchResponseItem.getItems().isEmpty()) {
+			return ScoredRepoResponse.builder()
+			                         .totalCount(0)
+			                         .incompleteResults(false)
+			                         .items(List.of())
+			                         .build();
+		}
 		final List<SimpleScoredRepoItem> scoredItems = githubSearchResponseItem.getItems().stream()
 		                                                                       .map(this::scoreRepository)
 		                                                                       .toList();
@@ -31,12 +39,18 @@ public class ScoringService {
 		                                      .max()
 		                                      .orElse(1.0);
 
-		return scoredItems.stream()
+		final List<SimpleScoredRepoDto> simpleScoredRepoDtoList = scoredItems.stream()
 		                  .sorted(Comparator.comparingDouble(SimpleScoredRepoItem::getRawScore).reversed())
 		                  .map(item -> scoredRepoConverter.convertItemToDto(
 			                  item,
 			                  scoreCalculatorService.normalizeScore(item, maxRawScore)))
-		                  .collect(Collectors.toList());
+		                  .toList();
+
+		return ScoredRepoResponse.builder()
+		                         .totalCount(githubSearchResponseItem.getTotalCount())
+		                         .incompleteResults(githubSearchResponseItem.isIncompleteResults())
+		                         .items(simpleScoredRepoDtoList)
+		                         .build();
 	}
 
 	private SimpleScoredRepoItem scoreRepository(final ScoredRepoItem repoItem) {
@@ -49,7 +63,7 @@ public class ScoringService {
 		                           .build();
 	}
 
-	public Mono<List<SimpleScoredRepoDto>> getScoredRepos(final String language, final String createdAfter, final int page, final int perPage) {
+	public Mono<ScoredRepoResponse> getScoredRepos(final String language, final String createdAfter, final int page, final int perPage) {
 		final GithubSearchRequest request = GithubSearchRequest.builder()
 		                                                       .language(language)
 		                                                       .createdAfter(createdAfter)

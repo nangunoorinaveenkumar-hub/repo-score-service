@@ -185,7 +185,7 @@ mvn test
 - Coverage is tracked via JaCoCo and included in SonarQube metrics.
 ---
 
-## 🧠 API Documentation (Swagger UI)
+## API Documentation (Swagger UI)
 
 This service includes **Swagger UI** for easy exploration and testing of endpoints.
 
@@ -221,8 +221,8 @@ mvn sonar:sonar \
 
 ## **Project Highlights & Quality Metrics**
 
-- **High Test Coverage:** 94.3% coverage with unit, WebFlux, and integration tests.
-- **Clean & Secure Code:** SonarQube shows 0 code smells, 0 vulnerabilities, 0 duplicates.
+- **High Test Coverage:** 94.9% coverage with unit, WebFlux, and integration tests.
+- **Clean & Secure Code:** SonarQube shows 0 code smells, 0 security hotspots, 0 duplicates.
 - **Reactive & Efficient:** Uses WebFlux with caching (TTL configurable) for high performance.
 - **Scoring Algorithm:** Transparent, weighted calculation with normalization (0–100).
 - **Documentation:** Interactive Swagger UI included.
